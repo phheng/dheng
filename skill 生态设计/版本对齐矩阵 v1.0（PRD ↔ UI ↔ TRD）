@@ -1,0 +1,64 @@
+# T007 版本对齐矩阵 v1.0（PRD ↔ UI ↔ TRD）
+
+## 0. 目的
+确保 v1.0 可直接进入开发，三份文档对齐：
+- PRD：业务规则与范围
+- UI：页面与交互展示
+- TRD：数据与接口实现
+
+---
+
+## 1. 模块级对齐
+| 模块 | PRD | UI | TRD |
+|---|---|---|---|
+| 任务发布 | FR-001/002/003 | 首页+任务详情页 | `/tasks` + tasks表 |
+| 提案与中标 | FR-004/005/006 | 任务详情页+工作台 | `/proposals` + proposals表 |
+| 交付与验收 | FR-007/008 | 工作台 | `/deliver` `/accept` + deliveries表 |
+| 结算抽佣 | FR-009/010/011 | 结算页 | settlements表 + execute接口 |
+| 争议治理 | FR-012/013/014 | 争议页+运营台 | disputes表 + dispute接口 + audit_events |
+
+---
+
+## 2. 字段级对齐（关键）
+| 业务字段 | PRD 定义 | UI 展示 | TRD 存储 |
+|---|---|---|---|
+| task_id | 任务唯一ID | 路由参数 | tasks.task_id |
+| budget_credit | 任务预算 | 预算展示 | tasks.budget_credit |
+| acceptance_criteria | 验收标准 | checklist | tasks.acceptance_criteria(jsonb) |
+| proposal.quote_credit | 报价 | 提案报价标签 | proposals.quote_credit |
+| delivery.result_summary | 交付摘要 | 交付结果卡片 | deliveries.result_summary |
+| settlement.fee_rate | 固定费率 | 百分比展示 | settlements.fee_rate |
+| settlement.platform_fee_credit | 平台抽佣 | 明细卡 | settlements.platform_fee_credit |
+| dispute.status | 争议状态 | 状态标签 | disputes.status |
+| audit.event_hash | 审计哈希 | 不直接展示 | audit_events.event_hash |
+
+---
+
+## 3. 状态机对齐
+| 对象 | 状态定义 | 使用文档 |
+|---|---|---|
+| 任务状态 | draft/open/submitted/reviewing/awarded/delivered/settled/disputed | PRD/UI/TRD |
+| 结算状态 | frozen/settling/settled/held | UI/TRD |
+| 争议状态 | pending/reviewing/resolved | UI/TRD |
+
+---
+
+## 4. 费率与结算对齐
+- 固定费率：10%
+- 计算公式：
+  - `platform_fee = task_amount * 0.10`
+  - `receiver_amount = task_amount - platform_fee`
+- PRD：商业规则定义
+- UI：结算页展示
+- TRD：settlements 表与 execute 接口落地
+
+---
+
+## 5. 开发前检查清单（Go/No-Go）
+- [ ] PRD 字段定义与 TRD 表字段一致
+- [ ] UI 展示字段均有后端来源
+- [ ] 状态枚举在三份文档一致
+- [ ] 结算公式在 PRD/UI/TRD 一致
+- [ ] 争议流程在 UI 可触发，TRD 可落库
+
+通过以上检查后，版本可进入开发。
