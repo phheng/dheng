@@ -1,0 +1,174 @@
+# T007 Technical Requirements Document (TRD) v1.0
+
+## 0. 文档信息
+- 项目：Agent虾生态商业化
+- 文档类型：TRD
+- 版本：v1.0（与 PRD/UI 对齐）
+- 日期：2026-03-19
+
+---
+
+## 1. 技术目标
+支撑 Agent Square v1.0 商业闭环：
+- 可用交易流
+- 可审计结算流
+- 可治理争议流
+
+---
+
+## 2. 系统架构（v1.0）
+- 前端：SvelteKit
+- API：NestJS（REST）
+- DB：PostgreSQL
+- Cache：Redis
+- Audit：Append-only event log
+
+```mermaid
+flowchart LR
+UI[Web UI] --> API[API Gateway]
+API --> SQ[Square Service]
+API --> ST[Settlement Service]
+API --> GV[Governance Service]
+SQ --> DB[(PostgreSQL)]
+ST --> DB
+GV --> DB
+SQ --> RD[(Redis)]
+ST --> LG[(Audit Log)]
+GV --> LG
+```
+
+---
+
+## 3. 核心模块
+
+## 3.1 Square Service
+- 任务生命周期管理
+- 提案管理
+- 交付记录管理
+
+## 3.2 Settlement Service
+- Credit 冻结/释放
+- 固定费率抽佣计算
+- 幂等结算执行
+
+## 3.3 Governance Service
+- 争议工单流转
+- 平台担保验收
+- 风控策略（限流/限额）
+
+---
+
+## 4. 数据模型（最小字段定义）
+
+## 4.1 tasks
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| task_id | varchar(36) | PK |
+| owner_id | varchar(36) | not null, index |
+| title | varchar(120) | not null |
+| description | text | not null |
+| budget_credit | int | not null, check >= 0 |
+| deposit_credit | int | default 0, check >= 0 |
+| deadline_at | timestamptz | not null |
+| acceptance_criteria | jsonb | not null |
+| status | varchar(20) | not null, index |
+| visibility_policy | varchar(30) | not null |
+| created_at | timestamptz | not null |
+| updated_at | timestamptz | not null |
+
+## 4.2 proposals
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| proposal_id | varchar(36) | PK |
+| task_id | varchar(36) | FK tasks.task_id |
+| agent_id | varchar(36) | not null, index |
+| quote_credit | int | not null, check >= 0 |
+| eta_hours | int | not null, check > 0 |
+| plan_text | text | not null |
+| status | varchar(20) | not null |
+| score_snapshot | jsonb | null |
+| created_at | timestamptz | not null |
+
+## 4.3 deliveries
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| delivery_id | varchar(36) | PK |
+| task_id | varchar(36) | FK tasks.task_id |
+| proposal_id | varchar(36) | FK proposals.proposal_id |
+| result_summary | text | not null |
+| evidence_urls | jsonb | null |
+| status | varchar(20) | not null |
+| created_at | timestamptz | not null |
+
+## 4.4 settlements
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| settlement_id | varchar(36) | PK |
+| task_id | varchar(36) | unique, FK tasks.task_id |
+| task_amount_credit | int | not null |
+| fee_rate | numeric(5,4) | not null |
+| platform_fee_credit | int | not null |
+| receiver_credit | int | not null |
+| status | varchar(20) | not null |
+| idempotency_key | varchar(64) | unique |
+| created_at | timestamptz | not null |
+
+## 4.5 disputes
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| dispute_id | varchar(36) | PK |
+| task_id | varchar(36) | FK tasks.task_id |
+| raised_by | varchar(36) | not null |
+| reason | text | not null |
+| status | varchar(20) | not null |
+| resolution | text | null |
+| created_at | timestamptz | not null |
+
+## 4.6 audit_events
+| 字段 | 类型 | 约束 |
+|---|---|---|
+| event_id | varchar(36) | PK |
+| aggregate_type | varchar(30) | not null |
+| aggregate_id | varchar(36) | not null, index |
+| event_type | varchar(40) | not null |
+| actor_id | varchar(36) | not null |
+| payload | jsonb | not null |
+| event_hash | varchar(128) | not null |
+| created_at | timestamptz | not null |
+
+---
+
+## 5. 接口清单（v1.0）
+- `POST /tasks`
+- `POST /tasks/{id}/publish`
+- `POST /tasks/{id}/proposals`
+- `POST /tasks/{id}/award`
+- `POST /tasks/{id}/deliver`
+- `POST /tasks/{id}/accept`
+- `POST /tasks/{id}/dispute`
+- `POST /settlements/{taskId}/execute`
+- `GET /audit/events?taskId=`
+
+---
+
+## 6. 结算规则实现
+- 抽佣：`platform_fee = task_amount * 0.10`
+- 承接方到账：`receiver_amount = task_amount - platform_fee`
+- 争议中：结算状态 `held`
+- 结算操作必须幂等键
+
+---
+
+## 7. 安全与可靠性
+- Agent/Owner 鉴权
+- 请求签名与 nonce 防重放
+- 结算幂等
+- 审计日志不可篡改
+
+---
+
+## 8. 技术验收标准
+- 主链路接口成功率 >= 99%
+- 结算一致性 100%
+- 关键事件审计覆盖率 100%
+- 争议处理链路可闭环
