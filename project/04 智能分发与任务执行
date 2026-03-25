@@ -1,0 +1,411 @@
+import React from 'react';
+import { MessageSquare, Users, Settings, Search, Smile, Folder, Scissors, MoreHorizontal, Maximize2, X, UserPlus, FileText, Check, ChevronRight, Image as ImageIcon, Terminal } from 'lucide-react';
+
+// --- Reusable UI Components for the Mockup ---
+
+const MacWindow = ({ children, width = "max-w-5xl", height = "h-[500px]" }) => (
+  <div className={`w-full ${width} bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col my-8 mx-auto font-sans`}>
+    <div className="h-10 bg-[#f5f5f5] border-b border-gray-200 flex items-center px-4 relative">
+      <div className="flex gap-2">
+        <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="text-xs text-gray-500 font-medium">Helix AI Web - 对话与任务执行</span>
+      </div>
+    </div>
+    <div className={`flex bg-white ${height}`}>
+      {children}
+    </div>
+  </div>
+);
+
+const LeftSidebar = () => (
+  <div className="w-16 bg-[#f7f7f7] border-r border-gray-200 flex flex-col items-center py-6 gap-8">
+    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+      Me
+    </div>
+    <div className="flex flex-col gap-6 text-gray-500">
+      <div className="text-[#07c160] bg-green-50 p-2 rounded-lg"><MessageSquare size={24} /></div>
+      <div className="hover:text-gray-800 p-2"><Users size={24} /></div>
+    </div>
+    <div className="mt-auto text-gray-400 hover:text-gray-600 p-2">
+      <Settings size={24} />
+    </div>
+  </div>
+);
+
+const ContactList = ({ active = "Helix" }) => (
+  <div className="w-64 bg-[#fdfdfd] border-r border-gray-200 flex flex-col flex-shrink-0">
+    <div className="h-16 flex items-center px-4 border-b border-gray-100">
+      <div className="bg-[#f0f0f0] flex-1 h-8 rounded flex items-center px-3 text-gray-400">
+        <Search size={16} />
+        <span className="ml-2 text-xs">搜索</span>
+      </div>
+      <button className="ml-3 w-8 h-8 bg-[#f0f0f0] rounded flex items-center justify-center text-gray-500 hover:bg-gray-200">
+        <span className="text-xl leading-none mb-1">+</span>
+      </button>
+    </div>
+    <div className="flex-1 overflow-y-auto">
+      {/* Helix Contact */}
+      <div className={`flex items-center gap-3 p-3 cursor-pointer ${active === "Helix" ? 'bg-[#ebebeb]' : 'hover:bg-gray-50'}`}>
+        <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-white font-bold text-lg">H</div>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-900 truncate">Helix</span>
+            <span className="text-xs text-gray-400">15:15</span>
+          </div>
+          <div className="text-xs text-gray-500 truncate">[名片]</div>
+        </div>
+      </div>
+      {/* Yoyo Contact */}
+      {active === "Yoyo" && (
+        <div className={`flex items-center gap-3 p-3 cursor-pointer ${active === "Yoyo" ? 'bg-[#ebebeb]' : 'hover:bg-gray-50'}`}>
+          <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center font-bold text-lg border border-yellow-200">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yoyo&backgroundColor=fef3c7" alt="Yoyo" className="w-full h-full rounded-lg" />
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-900 truncate">Yoyo</span>
+              <span className="text-xs text-gray-400">15:19</span>
+            </div>
+            <div className="text-xs text-gray-500 truncate">已为您生成了一张...</div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const ChatHeader = ({ title, status }) => (
+  <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 bg-[#f5f6f7] flex-shrink-0">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+      {status && <span className="text-xs text-[#07c160]">{status}</span>}
+    </div>
+    <div className="flex gap-4 text-gray-500 cursor-pointer">
+       <MoreHorizontal size={20} />
+    </div>
+  </div>
+);
+
+const ChatInput = ({ value = "" }) => (
+  <div className="h-40 bg-white border-t border-gray-200 flex flex-col flex-shrink-0">
+    <div className="flex items-center px-4 py-2 gap-4 text-gray-500">
+      <Smile size={20} className="cursor-pointer hover:text-gray-700" />
+      <Folder size={20} className="cursor-pointer hover:text-gray-700" />
+      <Scissors size={20} className="cursor-pointer hover:text-gray-700" />
+    </div>
+    <textarea 
+      className="flex-1 w-full resize-none outline-none px-4 py-1 text-sm text-gray-800" 
+      placeholder="在此输入消息..."
+      readOnly
+      value={value}
+    ></textarea>
+    <div className="flex justify-end px-4 py-2">
+      <button className="bg-[#e9e9e9] text-[#07c160] hover:bg-[#d2d2d2] px-6 py-1.5 rounded text-sm font-medium transition-colors">
+        发送
+      </button>
+    </div>
+  </div>
+);
+
+const UserBubble = ({ text }) => (
+  <div className="flex justify-end mb-4 shrink-0">
+    <div className="max-w-[70%] bg-[#95ec69] text-gray-900 px-4 py-2.5 rounded-lg rounded-tr-none shadow-sm text-sm leading-relaxed whitespace-pre-wrap">
+      {text}
+    </div>
+    <div className="w-10 h-10 bg-blue-500 rounded-lg ml-3 flex-shrink-0 flex items-center justify-center text-white font-bold">Me</div>
+  </div>
+);
+
+const BotBubble = ({ text, name="Helix", isCard=false, children, bg="bg-white" }) => {
+  const isHelix = name === "Helix";
+  const avatarBg = isHelix ? "bg-gray-800" : "bg-yellow-100";
+  const avatarContent = isHelix ? <span className="text-white font-bold">H</span> : <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yoyo&backgroundColor=fef3c7" className="w-full h-full rounded-lg" />;
+
+  return (
+    <div className="flex justify-start mb-4 shrink-0">
+      <div className={`w-10 h-10 rounded-lg mr-3 flex-shrink-0 flex items-center justify-center ${avatarBg} shadow-sm border ${isHelix ? 'border-gray-900' : 'border-yellow-200'}`}>
+         {avatarContent}
+      </div>
+      <div className="flex flex-col max-w-[75%]">
+        {!isCard && text && (
+          <div className={`${bg} border border-gray-100 text-gray-800 px-4 py-2.5 rounded-lg rounded-tl-none shadow-sm text-sm leading-relaxed whitespace-pre-wrap`}>
+            {text}
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// --- Main Application ---
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#f4f6f8] to-[#e5e9f0] font-sans pb-20">
+      
+      {/* 头部标题区域 */}
+      <div className="pt-16 pb-8 text-center max-w-4xl mx-auto px-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-md mb-6 border border-gray-100">
+          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=helix&backgroundColor=000000" className="w-10 h-10 rounded-lg" alt="Logo"/>
+        </div>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+          如何使用 Helix AI：智能分发与任务执行
+        </h1>
+        <p className="text-lg text-gray-600 font-medium">
+          核心演示：Helix 作为入口自动分配任务给最专业的 Bot，并展示复杂生图任务的幕后执行逻辑。
+        </p>
+      </div>
+
+      {/* --- Step 1: 对话入口与技能发现 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow">1</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">主入口对话：意图识别与专家推荐</h2>
+        </div>
+        <MacWindow height="h-[550px]">
+          <LeftSidebar />
+          <ContactList active="Helix" />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="Helix (10000)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+              <div className="text-center text-xs text-gray-400 mb-6">15:14</div>
+              <UserBubble text="你好，你会干什么" />
+              <BotBubble 
+                name="Helix"
+                text={`你好！我是 Helix，你的 AI 好友。我可以为你提供以下帮助：\n\n1. Bot 管理：支持创建和管理你的“小龙虾”(Bot)。你可以说“帮我养一只龙虾”来创建，或者说“看看我的虾”来管理已有 Bot。\n2. 好友推荐：根据你的需求，通过专业技能为你匹配并推荐最合适的好友名片。\n3. 网络检索：利用引擎搜索能力，为你查找并整合互联网上的实时信息。\n4. 任务协作：我能协调 CC（Bot 创建助手）等专业好友共同完成复杂任务。\n\n你可以直接下达指令，例如：“帮我养一只擅长写诗的小龙虾”。`} 
+              />
+              <UserBubble text="帮我推荐一个生成小红书风格图片的好友" />
+              <BotBubble 
+                name="Helix"
+                text={`为你推荐了擅长生成小红书风格图片的好友「Yoyo」。它可以根据你的描述生成各种风格的攻略图片、技术架构图、思维导图等。你可以直接点击名片与它开始对话。`}
+              >
+                {/* Bot Card Injection */}
+                <div className="mt-3 w-72 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                   <div className="p-4 flex gap-4 border-b border-gray-100">
+                      <div className="w-12 h-12 bg-yellow-100 rounded-lg flex-shrink-0 border border-yellow-200">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yoyo&backgroundColor=fef3c7" alt="Yoyo" className="w-full h-full rounded-lg" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-800 text-base">Yoyo</h3>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">各种风格的图片生成，例如攻略图片、架构图等...</p>
+                      </div>
+                   </div>
+                   <div className="bg-gray-50 px-4 py-3 flex items-center justify-center">
+                     <button className="flex items-center gap-2 bg-[#07c160] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#06ad56] transition-colors w-full justify-center shadow-sm">
+                        <UserPlus size={16} />
+                        加为好友
+                     </button>
+                   </div>
+                </div>
+              </BotBubble>
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 2: 切换专家并下达复杂任务 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg shadow">2</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">切换专家 Bot：揭秘强大的幕后工作流</h2>
+        </div>
+        <MacWindow height="h-[650px]">
+          <LeftSidebar />
+          <ContactList active="Yoyo" />
+          <div className="flex-[0.55] flex flex-col bg-[#f5f6f7] border-r border-gray-200">
+            <ChatHeader title="Yoyo (45606753)" status="已添加 Yoyo 为好友" />
+            <div className="flex-1 p-6 overflow-y-auto">
+               <BotBubble 
+                  name="Yoyo"
+                  text={`你好，和平的谜团。很高兴遇见你，“沉恐无小大，物无美恶”，这恰好与平易与温柔的同频令人印象深刻。我是你的全能视觉知识分析专家 Yoyo。\n\n无论你是在面对复杂的逻辑需要梳理成思维导图，还是想将枯燥的数据转化为精美的图表，或者希望为你提供极具吸引力的小红书配图，我都能为你提供支持。今天有什么我可以帮你视觉化呈现的吗？`}
+               />
+               <UserBubble text="帮我生成一张腾讯发展史的小红书风格图" />
+               
+               {/* Thinking UI Simulator */}
+               <div className="flex justify-start mb-4 shrink-0">
+                  <div className="w-10 h-10 rounded-lg mr-3 flex-shrink-0 flex items-center justify-center bg-yellow-100 shadow-sm border border-yellow-200 opacity-80">
+                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yoyo&backgroundColor=fef3c7" className="w-full h-full rounded-lg grayscale" />
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1 px-1 text-xs text-blue-500 font-medium bg-blue-50 px-3 py-1.5 rounded-full cursor-pointer border border-blue-100 shadow-sm">
+                      <div className="w-3 h-3 rounded-full flex items-center justify-center bg-blue-500 text-white animate-spin">
+                         <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      </div>
+                      <span>查看思考与执行过程...</span>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+            <ChatInput />
+          </div>
+
+          {/* Right Panel - Yoyo 工作台 (The impressive part) */}
+          <div className="flex-[0.45] bg-white flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10">
+             <div className="h-12 border-b border-gray-200 flex items-center justify-between px-4 bg-gray-50">
+                <span className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <Terminal size={14} className="text-blue-600"/> Yoyo的工作台
+                </span>
+                <div className="flex gap-2 text-gray-400">
+                  <Maximize2 size={16} />
+                  <X size={16} />
+                </div>
+             </div>
+             <div className="flex-1 p-5 overflow-y-auto text-sm text-gray-700 leading-relaxed bg-[#1e1e1e] font-mono shadow-inner">
+                {/* Simulated Terminal / Log Output */}
+                <div className="text-gray-300 space-y-4 text-xs">
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">{'>'}</span>
+                    <p>用户需要生成一张“腾讯发展史”的小红书风格图。根据规则，我需要先调用 <span className="text-yellow-300">fetch_skill</span> 获取“生成小红书风格的图片”技能的详细文档...</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">{'>'}</span>
+                    <p>我需要调用“生成小红书风格的图片”API，因此必须先通过 <span className="text-yellow-300">fetch_api</span> 获取其详细参数和请求方式。</p>
+                  </div>
+                  <div className="flex items-start gap-2 border-l-2 border-blue-500 pl-2 bg-blue-900/20 py-1">
+                    <span className="text-blue-400 mt-0.5">ℹ</span>
+                    <p className="text-blue-100">我将替用户提供生成的关键词和排版，构造一个详细的 prompt，调用API将参数转化为图文卡片。</p>
+                  </div>
+                  
+                  {/* The crucial 429 error handling part from the video */}
+                  <div className="flex items-start gap-2 mt-4">
+                    <span className="text-red-400 mt-0.5">⚠</span>
+                    <p className="text-red-300">由于之前 API 调用遇到了 <span className="font-bold">429 速率限制错误 (Too Many Requests)</span>，我决定按照重试策略进行第二次重试...</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-yellow-400 mt-0.5">↻</span>
+                    <p className="text-gray-400">正在应用指数退避算法，等待 3000ms 后重新发起请求...</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <p className="text-green-300 font-bold">第三次请求成功！数据已返回，正在渲染图像模板...</p>
+                  </div>
+                </div>
+             </div>
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 3: 最终成果展示 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20 mb-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg shadow">3</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">最终成果：完美输出定制化卡片</h2>
+        </div>
+        <MacWindow height="h-[650px]">
+          <LeftSidebar />
+          <ContactList active="Yoyo" />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="Yoyo (45606753)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+               <UserBubble text="帮我生成一张腾讯发展史的小红书风格图" />
+               <BotBubble name="Yoyo">
+                  <div className="bg-white border border-gray-100 text-gray-800 p-4 rounded-xl rounded-tl-none shadow-sm max-w-sm">
+                    <p className="text-sm mb-3">已经为您生成了一张「腾讯发展史」的小红书风格图。这张图涵盖了腾讯从1998年创立、QQ发布、香港上市到微信诞生等关键节点...</p>
+                    
+                    {/* Simulated Output Image (CSS Drawing of Infographic) */}
+                    <div className="w-full bg-gradient-to-br from-orange-400 via-red-500 to-pink-500 rounded-lg overflow-hidden shadow-md border border-white p-4 text-white relative group cursor-pointer">
+                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center z-20">
+                          <Maximize2 className="text-white opacity-0 group-hover:opacity-100 drop-shadow-lg" size={32} />
+                       </div>
+                       
+                       <div className="text-center mb-4 relative z-10">
+                         <h3 className="font-black text-xl italic drop-shadow-md">🚀 腾讯发展史</h3>
+                         <p className="text-[10px] bg-white/20 inline-block px-2 py-0.5 rounded-full mt-1 backdrop-blur-sm">科技与温度的时光旅程</p>
+                       </div>
+
+                       <div className="space-y-3 relative z-10">
+                          <div className="bg-white/95 text-gray-800 p-2.5 rounded-lg shadow-sm border-l-4 border-blue-500 transform -rotate-1 hover:rotate-0 transition-transform">
+                             <div className="font-black text-blue-600 text-lg leading-none">1998 ✦</div>
+                             <div className="text-xs font-bold mt-1">创立</div>
+                             <div className="text-[10px] text-gray-500">在深圳开启寻梦之旅</div>
+                          </div>
+                          
+                          <div className="bg-white/95 text-gray-800 p-2.5 rounded-lg shadow-sm border-l-4 border-yellow-500 ml-4 transform rotate-1 hover:rotate-0 transition-transform">
+                             <div className="font-black text-yellow-600 text-lg leading-none">1999 💬</div>
+                             <div className="text-xs font-bold mt-1">OICQ发布</div>
+                             <div className="text-[10px] text-gray-500">迈出国民社交第一步</div>
+                          </div>
+
+                          <div className="bg-white/95 text-gray-800 p-2.5 rounded-lg shadow-sm border-l-4 border-green-500 transform -rotate-1 hover:rotate-0 transition-transform">
+                             <div className="font-black text-green-600 text-lg leading-none">2011 📱</div>
+                             <div className="text-xs font-bold mt-1">微信诞生</div>
+                             <div className="text-[10px] text-gray-500">开启移动互联网新时代</div>
+                          </div>
+                       </div>
+                       
+                       <div className="mt-4 text-[9px] text-white/70 text-center font-mono">
+                         #腾讯 #大厂发展史 #互联网
+                       </div>
+                    </div>
+
+                  </div>
+               </BotBubble>
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* ----------------- 文字稿区域 ----------------- */}
+      <div className="max-w-4xl mx-auto mt-24 mb-16 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+         <div className="bg-slate-900 p-6 flex items-center gap-3">
+            <FileText className="text-white" size={28} />
+            <h2 className="text-2xl font-bold text-white tracking-wide">附：视频操作文字稿深度解读</h2>
+         </div>
+         <div className="p-8 md:p-12 prose prose-lg max-w-none text-gray-700">
+            
+            <p className="lead text-xl text-gray-600 font-medium mb-8 border-l-4 border-blue-500 pl-4 bg-blue-50/50 py-3 pr-4 rounded-r-lg">
+              本期视频是前三期的集大成者，完整展示了普通用户如何通过 Helix AI 平台，**从提出模糊需求，到由系统智能分配专家，再到专家独立解决技术难题并交付最终成果**的全链路过程。
+            </p>
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span> 
+               意图识别与“超级入口”路由
+            </h3>
+            <p>
+              在面对默认的主助手 <code>Helix (10000)</code> 时，用户并没有直接要求它画图，而是提出了一个平台级的需求：<strong>“帮我推荐一个生成小红书风格图片的好友”</strong>。
+            </p>
+            <p>
+              Helix 在这里扮演了**“超级入口 (Super Agent)”**的角色。它没有逞强去自己画图，而是精准理解了用户的意图，从海量技能库中匹配并推送了最专业的视觉专家——<strong>Yoyo</strong> 的名片。这展示了多智能体 (Multi-Agent) 协同的强大生态。
+            </p>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span> 
+               硬核揭秘：AI 的自主容错与复杂任务拆解
+            </h3>
+            <p>
+              切换到与 Yoyo 的对话后，用户下达了实质性的业务指令（生成腾讯发展史）。视频中最精彩的部分在于打开了**“Yoyo的工作台”**：
+            </p>
+            <ul className="list-disc pl-6 space-y-3 marker:text-indigo-500">
+              <li><strong>步骤拆解：</strong> Yoyo 首先分析出需要调用 <code>fetch_skill</code> 和特定的生图 API。</li>
+              <li><strong>Prompt 工程：</strong> 它意识到用户只给了一句话，于是它主动“替用户提供生成的关键词和排版”，完成了从模糊指令到精确 API 参数的转换。</li>
+              <li><strong>🔥 亮点 - 异常处理机制：</strong> 视频中明确展示了日志：<code className="text-red-500 bg-red-50 px-1 rounded">API 调用遇到了 429 速率限制错误</code>。在传统的简单大模型中，这会导致直接报错。但在 Helix 的工作流中，**Agent 拥有自主判断力，它决定“按照重试策略进行第二次重试”**，最终克服了网络环境的客观限制，成功拿到了数据！</li>
+            </ul>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span> 
+               交付极高完成度的成果
+            </h3>
+            <p>
+              经过后台复杂的思考、调用、纠错后，呈现给用户的只是一个极简且完美的结果：一张排版精美、文案准确的“腾讯发展史”小红书风格配图。
+            </p>
+            <p className="mt-6 font-bold text-lg text-gray-800 text-center bg-gray-50 p-6 rounded-xl border border-gray-200">
+              总结：Helix 平台屏蔽了底层所有的复杂性（寻找工具、拼接 Prompt、处理网络报错），让用户真正实现了“一句话需求，成品级交付”。
+            </p>
+         </div>
+      </div>
+
+    </div>
+  );
+}
