@@ -1,0 +1,348 @@
+import React from 'react';
+import { MessageSquare, Users, Settings, Search, Smile, Folder, Scissors, MoreHorizontal, Maximize2, X, FileText, Briefcase, Network, Cpu, CheckCircle2 } from 'lucide-react';
+
+// --- Reusable UI Components for the Mockup ---
+
+const MacWindow = ({ children, width = "max-w-6xl", height = "h-[550px]" }) => (
+  <div className={`w-full ${width} bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col my-8 mx-auto font-sans`}>
+    <div className="h-10 bg-[#f5f5f5] border-b border-gray-200 flex items-center px-4 relative">
+      <div className="flex gap-2">
+        <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="text-xs text-gray-500 font-medium">Helix AI Web - 多智能体协作工作流</span>
+      </div>
+    </div>
+    <div className={`flex bg-white ${height}`}>
+      {children}
+    </div>
+  </div>
+);
+
+const LeftSidebar = () => (
+  <div className="w-16 bg-[#f7f7f7] border-r border-gray-200 flex flex-col items-center py-6 gap-8 flex-shrink-0">
+    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+      Me
+    </div>
+    <div className="flex flex-col gap-6 text-gray-500">
+      <div className="text-[#07c160] bg-green-50 p-2 rounded-lg"><MessageSquare size={24} /></div>
+      <div className="hover:text-gray-800 p-2"><Users size={24} /></div>
+    </div>
+    <div className="mt-auto text-gray-400 hover:text-gray-600 p-2">
+      <Settings size={24} />
+    </div>
+  </div>
+);
+
+const ContactItem = ({ name, role, seed, bg, active = false, time = "2026-03-16" }) => (
+  <div className={`flex items-center gap-3 p-3 cursor-pointer ${active ? 'bg-[#ebebeb]' : 'hover:bg-gray-50'}`}>
+    <div className={`w-10 h-10 ${bg} rounded-lg flex items-center justify-center font-bold text-lg border border-black/5 flex-shrink-0 overflow-hidden`}>
+      <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=transparent`} alt={name} className="w-full h-full object-cover" />
+    </div>
+    <div className="flex-1 overflow-hidden">
+      <div className="flex justify-between items-center">
+        <span className="text-sm font-medium text-gray-900 truncate">{name} <span className="text-xs text-gray-500">({role})</span></span>
+      </div>
+      <div className="text-xs text-gray-400 truncate mt-0.5">{active ? "暂无消息" : "你好，和平的谜团！很高兴..."}</div>
+    </div>
+  </div>
+);
+
+const ContactList = () => (
+  <div className="w-64 bg-[#fdfdfd] border-r border-gray-200 flex flex-col flex-shrink-0">
+    <div className="h-16 flex items-center px-4 border-b border-gray-100">
+      <div className="bg-[#f0f0f0] flex-1 h-8 rounded flex items-center px-3 text-gray-400">
+        <Search size={16} />
+        <span className="ml-2 text-xs">搜索</span>
+      </div>
+      <button className="ml-3 w-8 h-8 bg-[#f0f0f0] rounded flex items-center justify-center text-gray-500 hover:bg-gray-200">
+        <span className="text-xl leading-none mb-1">+</span>
+      </button>
+    </div>
+    <div className="flex-1 overflow-y-auto">
+      <ContactItem name="SEO 专家" role="SEO Spec..." seed="Felix" bg="bg-blue-100" />
+      <ContactItem name="文案师" role="Copywriter" seed="Aneka" bg="bg-pink-100" />
+      <ContactItem name="创意官" role="CCO" seed="Jocelyn" bg="bg-purple-100" />
+      <ContactItem name="视觉要素" role="Visual..." seed="Jack" bg="bg-yellow-100" />
+      <div className="h-px bg-gray-100 my-1 mx-3"></div>
+      <ContactItem name="项目经理" role="PM" seed="Brian" bg="bg-emerald-100" active={true} />
+    </div>
+  </div>
+);
+
+const ChatHeader = ({ title }) => (
+  <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 bg-[#f5f6f7] flex-shrink-0">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+    </div>
+    <div className="flex gap-4 text-gray-500 cursor-pointer">
+       <MoreHorizontal size={20} />
+    </div>
+  </div>
+);
+
+const ChatInput = ({ value = "" }) => (
+  <div className="h-40 bg-white border-t border-gray-200 flex flex-col flex-shrink-0">
+    <div className="flex items-center px-4 py-2 gap-4 text-gray-500">
+      <Smile size={20} className="cursor-pointer hover:text-gray-700" />
+      <Folder size={20} className="cursor-pointer hover:text-gray-700" />
+      <Scissors size={20} className="cursor-pointer hover:text-gray-700" />
+    </div>
+    <textarea 
+      className="flex-1 w-full resize-none outline-none px-4 py-1 text-sm text-gray-800" 
+      placeholder="在此输入消息..."
+      readOnly
+      value={value}
+    ></textarea>
+    <div className="flex justify-end px-4 py-2">
+      <button className="bg-[#e9e9e9] text-[#07c160] hover:bg-[#d2d2d2] px-6 py-1.5 rounded text-sm font-medium transition-colors">
+        发送
+      </button>
+    </div>
+  </div>
+);
+
+const UserBubble = ({ text }) => (
+  <div className="flex justify-end mb-4 shrink-0">
+    <div className="max-w-[75%] bg-[#95ec69] text-gray-900 px-4 py-2.5 rounded-lg rounded-tr-none shadow-sm text-sm leading-relaxed whitespace-pre-wrap">
+      {text}
+    </div>
+    <div className="w-10 h-10 bg-blue-500 rounded-lg ml-3 flex-shrink-0 flex items-center justify-center text-white font-bold">Me</div>
+  </div>
+);
+
+const BotBubble = ({ text, name, role, seed, bgCol="bg-emerald-100", isGroup=false, children }) => {
+  return (
+    <div className="flex justify-start mb-5 shrink-0">
+      <div className={`w-10 h-10 rounded-lg mr-3 flex-shrink-0 flex items-center justify-center ${bgCol} shadow-sm border border-black/5 overflow-hidden`}>
+         <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=transparent`} className="w-full h-full object-cover" />
+      </div>
+      <div className="flex flex-col max-w-[85%]">
+        {isGroup && <span className="text-xs text-gray-500 mb-1 ml-1">{name} ({role})</span>}
+        {text && (
+          <div className={`bg-white border border-gray-100 text-gray-800 px-4 py-2.5 rounded-lg rounded-tl-none shadow-sm text-sm leading-relaxed whitespace-pre-wrap`}>
+            {text}
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// --- Main Application ---
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#f0f4f8] to-[#e1e5ea] font-sans pb-20">
+      
+      {/* 头部标题区域 */}
+      <div className="pt-16 pb-8 text-center max-w-4xl mx-auto px-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-md mb-6 border border-gray-100">
+          <Network className="text-blue-600" size={32} />
+        </div>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+          一人公司如何运作：多智能体协作
+        </h1>
+        <p className="text-lg text-gray-600 font-medium">
+          核心演示：只需给“项目经理 (PM)”下达一句话指令，AI 将自动拉群、分配任务，组织文案、SEO、视觉专家共同完成复杂项目。
+        </p>
+      </div>
+
+      {/* --- Step 1: 找到项目经理并下达需求 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow">1</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">充当老板：向“项目经理”下达一句话需求</h2>
+        </div>
+        <MacWindow height="h-[500px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="项目经理 (PM) (40257496)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+              <div className="text-center text-xs text-gray-400 mb-6">19:59</div>
+              <UserBubble text="我们内容公司接了一个活，要写一篇AI提高生产里的文稿，你安排一下" />
+              <UserBubble text="告诉他要干什么，错别字也没关系" />
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 2: 员工工作群实况 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg shadow">2</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">查看员工工作群：AI 团队自动拆解与协作</h2>
+        </div>
+        <MacWindow height="h-[700px]">
+          <LeftSidebar />
+          <ContactList />
+          
+          {/* Main PM Chat */}
+          <div className="flex-[0.45] flex flex-col bg-[#f5f6f7] border-r border-gray-200">
+            <ChatHeader title="项目经理 (PM) (40257496)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+               <UserBubble text="我们内容公司接了一个活，要写一篇AI提高生产里的文稿，你安排一下" />
+               <BotBubble name="项目经理" role="PM" seed="Brian" bgCol="bg-emerald-100">
+                  <div className="bg-white border border-gray-100 px-4 py-3 rounded-lg rounded-tl-none shadow-sm text-sm">
+                    好的老板，针对接到的“AI 提高生产力”文稿任务，我已经拉了一个项目专案群，并进行了任务拆解。我调度了以下同事：<br/><br/>
+                    • <b>@SEO 专家</b> 进行受众分析和关键词提取。<br/>
+                    • <b>@文案师</b> 负责具体的文章撰写。<br/>
+                    • <b>@视觉要素</b> 负责生成配图提示词。<br/><br/>
+                    您可以点击下方的工作群实时查看他们的进度：
+                  </div>
+                  {/* Join Group Button */}
+                  <div className="mt-3 flex items-center gap-2 px-1 text-sm text-blue-600 font-medium cursor-pointer hover:text-blue-700 bg-blue-50 py-2 rounded-lg justify-center border border-blue-100 shadow-sm transition-colors">
+                    <Users size={16} /> 查看员工工作群 (4人)
+                  </div>
+               </BotBubble>
+            </div>
+            <ChatInput />
+          </div>
+
+          {/* Right Panel - The Multi-Agent Group Chat */}
+          <div className="flex-[0.55] bg-[#f0f2f5] flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10">
+             <div className="h-14 border-b border-gray-200 flex items-center justify-between px-6 bg-white">
+                <div className="flex items-center gap-3">
+                   <div className="flex -space-x-2">
+                     <img className="w-8 h-8 rounded-full border-2 border-white bg-emerald-100" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Brian&backgroundColor=transparent" />
+                     <img className="w-8 h-8 rounded-full border-2 border-white bg-blue-100" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=transparent" />
+                     <img className="w-8 h-8 rounded-full border-2 border-white bg-pink-100" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=transparent" />
+                   </div>
+                   <div>
+                     <span className="text-sm font-bold text-gray-800 block leading-tight">项目经理(PM)的工作群</span>
+                     <span className="text-[10px] text-green-600">正在协作中...</span>
+                   </div>
+                </div>
+                <div className="flex gap-2 text-gray-400">
+                  <Maximize2 size={16} />
+                  <X size={16} />
+                </div>
+             </div>
+             
+             {/* Group Chat Messages */}
+             <div className="flex-1 p-5 overflow-y-auto bg-[#f8f9fa]">
+                <div className="text-center my-4 text-xs text-gray-400 bg-gray-200/50 rounded-full px-3 py-1 inline-block mx-auto">
+                   项目经理 (PM) 邀请了 SEO 专家, 文案师, 视觉要素 加入了群聊
+                </div>
+
+                <BotBubble isGroup={true} name="项目经理" role="PM" seed="Brian" bgCol="bg-emerald-100" text={`@所有人 老板交代了一个任务：“写一篇AI提高生产里的文稿”。请大家按照以下流程执行：\n\n@SEO专家 请先进行核心关键词拆解和受众痛点分析。\n@文案师 根据 SEO 的大纲撰写正文。\n@视觉要素 根据文案内容生成小红书风格的配图提示词。`} />
+                
+                <BotBubble isGroup={true} name="SEO 专家" role="SEO Specialist" seed="Felix" bgCol="bg-blue-100" text={`好的。我已完成关键词调研。\n\n**核心长尾词**：AI 职场神器、一人公司、自动化工作流、ChatGPT 提示词模板。\n**痛点切入**：拒绝重复劳动、打破职场天花板、准时下班。\n\n**建议结构大纲**：\n1. 痛点引入：你还在做“表哥表姐”吗？\n2. 破局方法：AI 如何重塑生产力。\n3. 实操演示：3个立竿见影的 AI 工作流。`} />
+
+                <BotBubble isGroup={true} name="文案师" role="Copywriter" seed="Aneka" bgCol="bg-pink-100" text={`收到，大纲很清晰。我已根据大纲完成初稿撰写。\n\n【标题】告别内卷！2026年打工人的觉醒：我是如何用 AI 搭建“一人公司”的？\n\n【正文节选】...在 AI 时代，生产力的鸿沟不再是工作时长的比拼，而是看谁能更早地“把猴子交给机器”。过去需要三天的数据分析，现在只需丢给数据分析 Agent...\n\n(全文已同步至项目文档)`} />
+
+                <BotBubble isGroup={true} name="视觉要素" role="Visual" seed="Jack" bgCol="bg-yellow-100" text={`根据文案的主题“一人公司”和“科技效率”，我已设计好配图的 Midjourney 提示词 (Prompt)：\n\n**封面图 Prompt**：\n3D isometric projection of a futuristic workspace, a human director at the center holding a holographic tablet, surrounded by floating AI agents, clean white background, cyan and neon accents, 8k, octane render --ar 3:4\n\n(已准备好3组不同风格的备选词)`} />
+
+             </div>
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 3: PM 整合汇报成果 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20 mb-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg shadow">3</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">看结果：PM 汇总全案并向老板交付</h2>
+        </div>
+        <MacWindow height="h-[600px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="项目经理 (PM) (40257496)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+               <BotBubble name="项目经理" role="PM" seed="Brian" bgCol="bg-emerald-100">
+                  <div className="bg-white border border-gray-100 p-5 rounded-xl rounded-tl-none shadow-sm text-sm">
+                    <p className="font-bold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+                      <CheckCircle2 className="text-green-500" size={18} /> 老板，您的“AI提高生产力”全案已完成！
+                    </p>
+                    <p className="text-gray-600 mb-4">团队协作非常顺利，以下是为您整理好的最终交付件汇总，您可以直接复制使用：</p>
+                    
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <div className="font-bold text-blue-800 mb-1 flex items-center gap-2"><Search size={14}/> 1. 流量密码 (由 SEO专家 提供)</div>
+                        <p className="text-blue-900/80 text-xs">核心标签：#职场干货 #AI工具 #效率神器 #一人公司。<br/>切入点：针对普通打工人渴望“告别加班”的痛点。</p>
+                      </div>
+
+                      <div className="bg-pink-50 p-3 rounded-lg border border-pink-100">
+                        <div className="font-bold text-pink-800 mb-1 flex items-center gap-2"><FileText size={14}/> 2. 爆款文案 (由 文案师 提供)</div>
+                        <p className="text-pink-900/80 text-xs line-clamp-2 italic">“在 AI 时代，生产力的鸿沟不再是工作时长的比拼，而是谁能掌握调度 AI 的能力。学会将重复工作交给 Agent，你就是一个超级个体...”</p>
+                        <button className="mt-2 text-pink-600 text-xs font-medium hover:underline">📄 查看完整 1500 字文档</button>
+                      </div>
+
+                      <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                        <div className="font-bold text-yellow-800 mb-1 flex items-center gap-2"><Cpu size={14}/> 3. AI 绘图指令 (由 视觉要素 提供)</div>
+                        <code className="block bg-yellow-100/50 p-2 rounded text-[10px] text-yellow-900 font-mono mt-1 border border-yellow-200/50">
+                          3D isometric projection of a futuristic workspace, a human director at the center holding a holographic tablet...
+                        </code>
+                        <p className="text-yellow-800/60 text-[10px] mt-1">* 可直接复制粘贴至 Midjourney 或类似生图工具使用。</p>
+                      </div>
+                    </div>
+                  </div>
+               </BotBubble>
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* ----------------- 文字稿区域 ----------------- */}
+      <div className="max-w-4xl mx-auto mt-24 mb-16 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+         <div className="bg-slate-900 p-6 flex items-center gap-3">
+            <FileText className="text-white" size={28} />
+            <h2 className="text-2xl font-bold text-white tracking-wide">附：视频操作文字稿深度解读</h2>
+         </div>
+         <div className="p-8 md:p-12 prose prose-lg max-w-none text-gray-700">
+            
+            <p className="lead text-xl text-gray-600 font-medium mb-8 border-l-4 border-emerald-500 pl-4 bg-emerald-50/50 py-3 pr-4 rounded-r-lg">
+              如果说前几期视频是在教你“如何制造一个好用的工具”，那么本期视频则跨越到了下一个时代——**“如何组建一支 AI 团队”**。这就是大模型领域目前最热门的方向：**Multi-Agent（多智能体协作）**。
+            </p>
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-emerald-100 text-emerald-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span> 
+               告别事必躬亲：真正的“老板体验”
+            </h3>
+            <p>
+              在传统的大模型交互中，你需要自己充当所有角色：你要自己写复杂的 Prompt 设定身份，自己去指导 AI 写大纲，再指导它扩写，最后还要自己去琢磨配图词。这叫“使用工具”。
+            </p>
+            <p>
+              而在视频中，用户仅仅对 <strong>项目经理(PM)</strong> 说了一句大白话：“接了个活，写一篇AI文稿，你安排一下，错别字也没关系”。**用户从“操作员”变成了真正的“决策者”**。
+            </p>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span> 
+               黑盒揭秘：AI 员工的群聊与 SOP
+            </h3>
+            <p>
+              视频中展现的“工作群”界面极为惊艳。这不仅是 UI 的包装，更是底层逻辑的体现：
+            </p>
+            <ul className="list-disc pl-6 space-y-3 marker:text-emerald-500">
+              <li><strong>路由与分发 (Routing)：</strong> PM 接收到指令后，评估任务类型，自动将公司里的 <code>SEO 专家</code>、<code>文案师</code> 和 <code>视觉设计</code> 拉入群聊。</li>
+              <li><strong>串行与并行工作流 (Workflow)：</strong> 它们并不是瞎聊。PM 制定了标准的 SOP：SEO 先出框架 -{'>'} 文案填补血肉 -{'>'} 视觉负责包装。它们严格按照顺序，以上一个 Agent 的输出作为下一个 Agent 的输入。</li>
+              <li><strong>术业有专攻：</strong> 每一个小 Bot 背后都挂载了特定领域的专业知识库和系统提示词，保证它们在各自领域的专业度远超一个普通的通用型大模型。</li>
+            </ul>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-purple-100 text-purple-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span> 
+               “一人公司”时代的到来
+            </h3>
+            <p>
+              当 PM 把排版精美、包含“策略+正文+配图指令”的全套交付件交到你手里时，你其实已经完成了一家小型内容营销公司一整天的工作量。
+            </p>
+            <p className="mt-6 font-bold text-lg text-gray-800 text-center bg-gray-50 p-6 rounded-xl border border-gray-200">
+              在这个体系下，你的核心竞争力不再是写文案或画图的能力，而是<strong>“定义问题”</strong>和<strong>“拆解目标”</strong>的能力。只要你能准确地给 PM 下达指令，你就拥有了一支 24 小时在线的数字化军队。
+            </p>
+         </div>
+      </div>
+
+    </div>
+  );
+}
