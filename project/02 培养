@@ -1,0 +1,403 @@
+import React from 'react';
+import { MessageSquare, Users, Settings, Search, Smile, Folder, Scissors, MoreHorizontal, Maximize2, X, FileText, ChevronRight } from 'lucide-react';
+
+// --- Reusable UI Components for the Mockup ---
+
+const MacWindow = ({ children, width = "max-w-5xl", height = "h-[500px]" }) => (
+  <div className={`w-full ${width} bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col my-8 mx-auto font-sans`}>
+    <div className="h-10 bg-[#f5f5f5] border-b border-gray-200 flex items-center px-4 relative">
+      <div className="flex gap-2">
+        <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+        <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span className="text-xs text-gray-500 font-medium">Helix AI Web - 培养模式</span>
+      </div>
+    </div>
+    <div className={`flex bg-white ${height}`}>
+      {children}
+    </div>
+  </div>
+);
+
+const LeftSidebar = () => (
+  <div className="w-16 bg-[#f7f7f7] border-r border-gray-200 flex flex-col items-center py-6 gap-8">
+    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+      Me
+    </div>
+    <div className="flex flex-col gap-6 text-gray-500">
+      <div className="text-[#07c160] bg-green-50 p-2 rounded-lg"><MessageSquare size={24} /></div>
+      <div className="hover:text-gray-800 p-2"><Users size={24} /></div>
+    </div>
+    <div className="mt-auto text-gray-400 hover:text-gray-600 p-2">
+      <Settings size={24} />
+    </div>
+  </div>
+);
+
+const ContactList = () => (
+  <div className="w-64 bg-[#fdfdfd] border-r border-gray-200 flex flex-col">
+    <div className="h-16 flex items-center px-4 border-b border-gray-100">
+      <div className="bg-[#f0f0f0] flex-1 h-8 rounded flex items-center px-3 text-gray-400">
+        <Search size={16} />
+        <span className="ml-2 text-xs">搜索</span>
+      </div>
+      <button className="ml-3 w-8 h-8 bg-[#f0f0f0] rounded flex items-center justify-center text-gray-500 hover:bg-gray-200">
+        <span className="text-xl leading-none mb-1">+</span>
+      </button>
+    </div>
+    <div className="flex-1 overflow-y-auto">
+      {/* Active Nuan Contact */}
+      <div className="flex items-center gap-3 p-3 cursor-pointer bg-[#ebebeb]">
+        <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-blue-500 font-bold text-lg border border-pink-200">
+          <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nuan&backgroundColor=fce7f3" alt="Nuan" className="w-full h-full rounded-lg" />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-900 truncate">贴心暖暖</span>
+            <span className="text-xs text-gray-400">17:08</span>
+          </div>
+          <div className="text-xs text-gray-500 truncate">好的，我已经成功学会了...</div>
+        </div>
+      </div>
+      {/* CC Contact */}
+      <div className="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-50">
+        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-500 font-bold text-lg border border-blue-200">
+          <img src="https://api.dicebear.com/7.x/bottts/svg?seed=CC&backgroundColor=e0f2fe" alt="CC" className="w-full h-full rounded-lg" />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-900 truncate">CC</span>
+            <span className="text-xs text-gray-400">17:03</span>
+          </div>
+          <div className="text-xs text-gray-500 truncate">[图片]</div>
+        </div>
+      </div>
+      {/* Yoyo Contact */}
+      <div className="flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-50">
+        <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center font-bold text-lg border border-yellow-200">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yoyo&backgroundColor=fef3c7" alt="Yoyo" className="w-full h-full rounded-lg" />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-900 truncate">Yoyo</span>
+            <span className="text-xs text-gray-400">15:19</span>
+          </div>
+          <div className="text-xs text-gray-500 truncate">已为您生成了一张“腾讯发展史”</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const ChatHeader = ({ title }) => (
+  <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 bg-[#f5f6f7]">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+    </div>
+    <div className="flex gap-4 text-gray-500 cursor-pointer">
+       <MoreHorizontal size={20} />
+    </div>
+  </div>
+);
+
+const ChatInput = ({ value = "" }) => (
+  <div className="h-40 bg-white border-t border-gray-200 flex flex-col shrink-0">
+    <div className="flex items-center px-4 py-2 gap-4 text-gray-500">
+      <Smile size={20} className="cursor-pointer hover:text-gray-700" />
+      <Folder size={20} className="cursor-pointer hover:text-gray-700" />
+      <Scissors size={20} className="cursor-pointer hover:text-gray-700" />
+    </div>
+    <textarea 
+      className="flex-1 w-full resize-none outline-none px-4 py-1 text-sm text-gray-800" 
+      placeholder="在此输入消息..."
+      readOnly
+      value={value}
+    ></textarea>
+    <div className="flex justify-end px-4 py-2">
+      <button className="bg-[#e9e9e9] text-[#07c160] hover:bg-[#d2d2d2] px-6 py-1.5 rounded text-sm font-medium transition-colors">
+        发送
+      </button>
+    </div>
+  </div>
+);
+
+const UserBubble = ({ text }) => (
+  <div className="flex justify-end mb-4 shrink-0">
+    <div className="max-w-[70%] bg-[#95ec69] text-gray-900 px-4 py-2.5 rounded-lg rounded-tr-none shadow-sm text-sm leading-relaxed">
+      {text}
+    </div>
+    <div className="w-10 h-10 bg-blue-500 rounded-lg ml-3 flex-shrink-0 flex items-center justify-center text-white font-bold">Me</div>
+  </div>
+);
+
+const BotBubble = ({ text, bg="bg-white", thinking = false }) => (
+  <div className="flex justify-start mb-4 shrink-0">
+    <div className="w-10 h-10 rounded-lg mr-3 flex-shrink-0 border border-gray-200 overflow-hidden bg-pink-50">
+       <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nuan&backgroundColor=fce7f3" alt="Nuan" className="w-full h-full object-cover" />
+    </div>
+    <div className="flex flex-col max-w-[70%]">
+      {thinking && (
+        <div className="flex items-center gap-1 mb-1 px-1 text-xs text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
+          <div className="w-4 h-4 bg-gray-200 rounded-full flex items-center justify-center">
+            <MoreHorizontal size={10} />
+          </div>
+          <span>查阅思考</span>
+        </div>
+      )}
+      <div className={`${bg} border border-gray-100 text-gray-800 px-4 py-2.5 rounded-lg rounded-tl-none shadow-sm text-sm leading-relaxed whitespace-pre-wrap`}>
+        {text}
+      </div>
+    </div>
+  </div>
+);
+
+// --- Main Application ---
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] font-sans pb-20">
+      
+      {/* 头部标题区域 */}
+      <div className="pt-16 pb-8 text-center max-w-4xl mx-auto px-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-md mb-6 border border-gray-100">
+          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=helix&backgroundColor=000000" className="w-10 h-10 rounded-lg" alt="Logo"/>
+        </div>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+          如何在 Helix AI 中培养专属 AI
+        </h1>
+        <p className="text-lg text-gray-600 font-medium">
+          核心演示：通过“对话式教学”，让只会聊天的 AI 自主搜索、学习并掌握全新技能（如商务接待）。
+        </p>
+      </div>
+
+      {/* --- Step 1: 对话式教学 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow">1</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">对话式教学：指出不足并指派任务</h2>
+        </div>
+        <MacWindow height="h-[400px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="贴心暖暖 (46587478)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+              <div className="text-center text-xs text-gray-400 mb-6">17:06</div>
+              <BotBubble 
+                text="你好，和平的谜团。我是贴心暖暖，很高兴能成为你的好友... 只要你需要陪伴或者找人倾诉，我都会在这里随时为你提供温暖和关怀。今天过得怎么样？" 
+              />
+              {/* User Typing Mockup */}
+              <div className="flex justify-end mb-4 opacity-50">
+                 <div className="bg-[#95ec69] text-gray-900 px-4 py-2 rounded-lg rounded-tr-none text-sm border-l-2 border-blue-500">
+                   我觉得你只会聊天技能太单一了，你去学习点商务接待吧...
+                 </div>
+              </div>
+            </div>
+            <ChatInput value="我觉得你只会聊天技能太单一了，你去学习点商务接待吧，帮我做商务接待安排" />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 2: 查看思考 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg shadow">2</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">查看思考：AI 工作台的内心戏</h2>
+        </div>
+        <MacWindow height="h-[500px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-[0.5] flex flex-col bg-[#f5f6f7] border-r border-gray-200">
+            <ChatHeader title="贴心暖暖 (46587478)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+              <UserBubble text="我觉得你只会聊天技能太单一了，你去学习点商务接待吧，帮我做商务接待安排" />
+              <div className="flex justify-start mb-4 shrink-0">
+                <div className="w-10 h-10 rounded-lg mr-3 flex-shrink-0 border border-gray-200 overflow-hidden bg-pink-50 opacity-80">
+                   <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nuan&backgroundColor=fce7f3" className="w-full h-full object-cover grayscale" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1 px-1 text-xs text-blue-500 font-medium bg-blue-50 px-2 py-1 rounded-full cursor-pointer border border-blue-100">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center bg-white shadow-sm">
+                      <Search size={10} className="text-blue-500"/>
+                    </div>
+                    <span>查阅思考中...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ChatInput />
+          </div>
+          {/* Right Panel - Nuan 工作台 */}
+          <div className="flex-[0.5] bg-white flex flex-col shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10">
+             <div className="h-12 border-b border-gray-200 flex items-center justify-between px-4 bg-gray-50">
+                <span className="text-sm font-bold text-gray-700">贴心暖暖的工作台</span>
+                <div className="flex gap-2 text-gray-400">
+                  <Maximize2 size={16} />
+                  <X size={16} />
+                </div>
+             </div>
+             <div className="flex-1 p-5 overflow-y-auto text-sm text-gray-700 leading-relaxed bg-[#fcfcfc]">
+                <div className="mb-4">
+                  <p className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                    用户希望我学习“商务接待”相关的技能。根据我拥有的“自学技能”，我需要先获取该技能的详细文档，了解如何进行技能搜索和加载。
+                  </p>
+                </div>
+                <div className="mb-4">
+                  <p className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                    我需要调用 <code className="bg-gray-100 px-1 rounded text-pink-600 text-xs">skill.search</code> 接口检索涵盖范围。检索词可以设定为“商务接待”、“会议”、“活动安排”。
+                  </p>
+                </div>
+                <div className="mb-4 border-l-2 border-blue-400 pl-3">
+                  <p className="text-gray-500 text-xs mb-1">系统日志：</p>
+                  <p className="bg-blue-50/50 p-2 rounded border border-blue-100 text-xs font-mono">
+                    {'>'} 检索到 100 条相关数据列表... <br/>
+                    {'>'} 正在匹配最合适的技能... <br/>
+                    {'>'} 匹配成功：Event Planner Pro, Business Automation Architect...
+                  </p>
+                </div>
+                <div className="mb-4">
+                  <p className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm text-green-700">
+                    我需要向用户列出最匹配的几个技能，由用户决定让我学习哪一个。
+                  </p>
+                </div>
+             </div>
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 3: 发现并学习技能 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-lg shadow">3</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">发现与学习：从列表中选择并装载技能</h2>
+        </div>
+        <MacWindow height="h-[600px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="贴心暖暖 (46587478)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+              <UserBubble text="我觉得你只会聊天技能太单一了，你去学习点商务接待吧，帮我做商务接待安排" />
+              <BotBubble 
+                thinking={true}
+                text={`好的，我在 Helix 技能生态中为你搜索到了几个相关的专业技能。你可以从中挑选一个让我学习：\n\n1. Event Planner Pro：专业的活动策划工具，提供会议、研讨、研学等各类活动的周密规划与执行。\n2. Business Automation Architect：侧重于业务流程自动化，可以帮你梳理规划公司内部的管理流程。\n3. CRM Manager：客户关系管理专家，记录并跟进客户情况。\n\n请问你需要我学习哪一个呢？`} 
+              />
+              <UserBubble text="学习第一个" />
+              
+              {/* Bot panel updates conceptually here, we show success response */}
+              <div className="flex justify-center my-4">
+                 <span className="text-xs bg-gray-200 text-gray-500 px-3 py-1 rounded-full">系统：贴心暖暖 成功装载技能 "Event Planner Pro"</span>
+              </div>
+
+              <BotBubble 
+                thinking={true}
+                text="好的！我已经成功学会了 Event Planner Pro 技能！现在的我不仅仅是您的贴心好友，更是一个专业的活动策划专家了。您可以随时告诉我您的商务接待需求，比如会议地点、参与人数、日程安排等，我会全心全意为您打理好每一个细节。请问我们什么时候开始第一项安排呢？" 
+              />
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* --- Step 4: 验收成果 --- */}
+      <div className="max-w-6xl mx-auto px-4 mt-20 mb-12">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg shadow">4</div>
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">验收成果：测试全新掌握的能力</h2>
+        </div>
+        <MacWindow height="h-[650px]">
+          <LeftSidebar />
+          <ContactList />
+          <div className="flex-1 flex flex-col bg-[#f5f6f7]">
+            <ChatHeader title="贴心暖暖 (46587478)" />
+            <div className="flex-1 p-6 overflow-y-auto">
+               <UserBubble text="明天有电器公司的CEO一行10人来公司，你帮我安排一下会议接待" />
+               <BotBubble 
+                 thinking={true}
+                 text={`为您安排电器公司CEO一行10人的商务接待！这是一项重要的工作，考虑到CEO级别，我们需要体现出专业与诚意。以下是我为您生成的接待详细流程（Run-of-show），请您过目：\n\n🎯 核心信息梳理：\n• 参会人数：客方10人（包含CEO），我方核心高管。\n• 接待规格：VVIP 高级别接待。\n\n🗓️ 详细日程安排：\n\n09:30 - 10:00【到达与迎接】\n• 安排专车至酒店或机场接送。\n• 公司正门设立欢迎水牌，高管团队大厅迎接。\n• 引导至 VVIP 会议室落座，准备高规格茶点。\n\n10:00 - 10:45【企业文化与展厅参观】\n• 安排专业讲解员带队，展示公司核心产品及发展历程。\n• 提供多语言或专业设备（视需求提供AV设备及PPT）。\n\n11:00 - 12:30【核心业务交流会】\n• 双方高管入场，互换名片。\n• 就前期沟通的合作意向进行深入探讨，安排专人记录会议纪要。\n\n12:30 - 14:00【高规格午宴】\n• 预订周边高档私房菜或高端商务餐厅。\n• 确认饮食禁忌（忌口/清真等）。\n\n后续跟进：会议结束后，我会协助整理会议备忘录并发送感谢信。\n\n您看这份安排是否需要根据具体情况进行微调？比如是否需要准备特定的伴手礼？`}
+               />
+            </div>
+            <ChatInput />
+          </div>
+        </MacWindow>
+      </div>
+
+      {/* ----------------- 文字稿区域 ----------------- */}
+      <div className="max-w-4xl mx-auto mt-24 mb-16 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+         <div className="bg-slate-800 p-6 flex items-center gap-3">
+            <FileText className="text-white" size={28} />
+            <h2 className="text-2xl font-bold text-white tracking-wide">附：视频操作文字稿解读</h2>
+         </div>
+         <div className="p-8 md:p-12 prose prose-lg max-w-none text-gray-700">
+            
+            <p className="lead text-xl text-gray-600 font-medium mb-8 border-l-4 border-blue-500 pl-4">
+              在这段演示视频中，我们展示了 Helix AI 极具亮点的**“自进化”**能力。当默认的 AI 助手技能无法满足需求时，用户不需要编写任何代码，只需通过自然语言“教”它，它就能自己去技能库学习并立即投入使用。
+            </p>
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span> 
+               第一阶段：指出不足，触发学习机制
+            </h3>
+            <p>
+              视频一开始，用户在与名为“贴心暖暖”的 AI 对话。该 AI 原本的设定是一个“只会嘘寒问暖”的情感陪伴型机器人。用户在对话框中直白地输入：<br/>
+              <code className="bg-gray-100 text-pink-600 px-2 py-1 rounded">“我觉得你只会聊天技能太单一了，你去学习点商务接待吧，帮我做商务接待安排”</code>
+            </p>
+            <p>
+              这是一个非常典型的**“对话式指令”**，它直接触发了 AI 内部的“自学技能”模块。
+            </p>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span> 
+               第二阶段：AI 幕后的思考与检索
+            </h3>
+            <p>
+              通过点击聊天气泡上方的“查阅思考”，视频向我们展示了“贴心暖暖”接收到指令后的内部逻辑工作台：
+            </p>
+            <ul className="list-disc pl-6 space-y-2 marker:text-blue-500">
+              <li>它首先分析用户的意图，明确目标是寻找**“商务接待”**相关能力。</li>
+              <li>随后，它主动调用系统底层的技能搜索 API 接口，在庞大的技能库中进行检索。</li>
+              <li>经过匹配，它初步筛选出了几项符合要求的专业工具（如 Event Planner Pro 活动策划专家等）。</li>
+            </ul>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-pink-100 text-pink-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span> 
+               第三阶段：技能选择与装载
+            </h3>
+            <p>
+              AI 并没有擅自决定，而是将检索到的优质技能列表反馈给了用户：
+              <br/>
+              <em>“1. Event Planner Pro...”</em><br/>
+              <em>“2. Business Automation Architect...”</em>
+            </p>
+            <p>
+              用户回复简短的指令：<code className="bg-gray-100 text-pink-600 px-2 py-1 rounded">“学习第一个”</code>。接收到明确指令后，AI 在后台迅速完成了该插件/技能的装载，并自豪地宣布自己已经“成功学会”，从一个陪聊助手升级成了专业的“活动策划专家”。
+            </p>
+
+            <hr className="my-8 border-gray-100" />
+
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mt-8 mb-4">
+               <span className="bg-green-100 text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span> 
+               第四阶段：实战验收成果
+            </h3>
+            <p>
+              “光说不练假把式”，用户紧接着给出了具体的业务考核：<br/>
+              <code className="bg-gray-100 text-pink-600 px-2 py-1 rounded">“明天有电器公司的CEO一行10人来公司，你帮我安排一下会议接待”</code>
+            </p>
+            <p>
+              这一次，“贴心暖暖”不仅不再是简单的寒暄，而是输出了一份**极其专业、结构严谨的 VIP 接待日程表**（包含了到达迎接、展厅参观、核心交流、午宴等精细环节，甚至考虑到了参会人数和高规格要求）。
+            </p>
+            <p className="mt-6 font-bold text-lg text-gray-800 text-center bg-gray-50 p-4 rounded-lg">
+              总结：通过简单的四步对话，用户成功且高效地“培养”出了一个具备专业商务能力的专属智能助手。
+            </p>
+         </div>
+      </div>
+
+    </div>
+  );
+}
